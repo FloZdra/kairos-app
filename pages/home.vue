@@ -2,69 +2,41 @@
   <v-container>
     <v-row>
       <v-col>
-        <TaskPreview :projects="projects"></TaskPreview>
+        <TaskPreview :projects="projects" :tasks="tasks"></TaskPreview>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="py-0">
-        <v-sheet min-height="70vh" rounded="lg" class="pa-2">
-          <ListProjects
-            :projects="projects"
-            @new-project="newProject"
-            @edit-project="editProject"
-          ></ListProjects>
-        </v-sheet>
+      <v-col>
+        <ListProjects :projects="projects"></ListProjects>
       </v-col>
     </v-row>
-
-    <v-dialog v-if="addEdit.dialog" v-model="addEdit.dialog" max-width="350">
-      <AddEditProject :project="addEdit.project" @close="closeDialog"></AddEditProject>
-    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import ListProjects from '@/components/Projects/ListProjects'
-import AddEditProject from '@/components/Projects/AddEditProject'
-import TaskPreview from '@/components/Tasks/TaskPreview'
+import TaskPreview from '@/components/Tasks/ListTasks'
 export default {
   name: 'HomePage',
-  components: { TaskPreview, AddEditProject, ListProjects },
+  components: { TaskPreview, ListProjects },
   layout: 'default',
   middleware: 'auth',
-  async asyncData({ $axios, error }) {
+  async asyncData({ $axios, store, error }) {
     try {
-      const response = await $axios.get(`/api/projects`)
-      return { projects: response.data }
+      const projects = await $axios.get(`/api/projects`)
+      const tasks = await $axios.get(`/api/users/${store.state.user.id}/tasks`)
+      return { projects: projects.data, tasks: tasks.data }
     } catch (e) {
       return error({ statusCode: 500, message: 'Internal server error' })
     }
   },
   data() {
     return {
-      tasks: [],
       projects: [],
-      addEdit: {
-        dialog: false,
-        project: false,
-      },
+      tasks: [],
     }
   },
-  methods: {
-    async closeDialog(refresh) {
-      console.log('hey')
-      this.addEdit.dialog = false
-      if (refresh) await this.$nuxt.refresh()
-    },
-    newProject() {
-      this.addEdit.project = null
-      this.addEdit.dialog = true
-    },
-    editProject(project) {
-      this.addEdit.project = project
-      this.addEdit.dialog = true
-    },
-  },
+  methods: {},
 }
 </script>
 

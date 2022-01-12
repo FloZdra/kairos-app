@@ -8,72 +8,80 @@
         <!--          height="24"-->
         <!--          max-width="24"-->
         <!--        />-->
-        <span class="text-h6 font-weight-bold">Projects</span>
+        <span class="text-h6 font-weight-bold">Recent tasks</span>
         <v-spacer></v-spacer>
         <span class="primary--text text-body-2">See all</span>
       </div>
       <v-divider></v-divider>
       <div
-        v-for="(project, i) in projects"
+        v-for="(task, i) in tasks"
         :key="i"
         v-ripple
         class="d-flex align-start pa-3 text-body-2 text-truncate"
         style="user-select: none; cursor: pointer"
-        @click="editProject(project)"
+        @click="editTask(task)"
       >
-        <v-icon size="18" left>mdi-view-list</v-icon>
+        <v-icon size="18" left :color="task.frozen ? '' : 'success'">
+          {{ task.frozen ? 'mdi-check-circle-outline' : 'mdi-record-circle-outline' }}
+        </v-icon>
         <div>
-          <span>{{ project.name }}</span>
+          <span>{{ task.name }}</span>
           <v-icon small>mdi-circle-medium</v-icon>
-          <span class="text--secondary text-caption">{{ 'metadata' }}</span>
+          <span class="text--secondary text-caption">{{ projectName(task) }}</span>
           <br />
-          <span class="text--secondary text-caption">{{ project.description }}</span>
+          <span class="text--secondary text-caption">
+            {{ task.description || 'No description' }}
+          </span>
         </div>
       </div>
-      <div v-if="projects.length === 0" class="d-flex align-center pa-3 text-body-2">
-        No project
-      </div>
+      <div v-if="tasks.length === 0" class="d-flex align-center pa-3 text-body-2">No record</div>
       <v-divider></v-divider>
       <v-card-text
         v-ripple
         class="pa-3 text-body-2"
         style="user-select: none; cursor: pointer"
-        @click="newProject"
+        @click="addTask"
       >
         <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
-        <span>Add a project</span>
+        <span>Add a task</span>
       </v-card-text>
     </v-card>
 
-    <AddEditProject v-model="addEdit.dialog" :project="addEdit.project"></AddEditProject>
+    <AddEditTask v-model="addEdit.dialog" :projects="projects" :task="addEdit.task"></AddEditTask>
   </div>
 </template>
 
 <script>
-import AddEditProject from '@/components/Projects/AddEditProject'
+import AddEditTask from '@/components/Tasks/AddEditTask'
 export default {
-  name: 'ListProjects',
-  components: { AddEditProject },
+  name: 'ListTasks',
+  components: { AddEditTask },
   props: {
     projects: {
+      type: Array,
+      default: () => [],
+    },
+    tasks: {
       type: Array,
       default: () => [],
     },
   },
   data() {
     return {
-      addEdit: { dialog: false, project: null },
+      addEdit: { dialog: false, task: null },
     }
   },
-  created() {},
   methods: {
-    newProject() {
-      this.addEdit.project = null
+    addTask() {
+      this.addEdit.task = null
       this.addEdit.dialog = true
     },
-    editProject(project) {
-      this.addEdit.project = project
+    editTask(task) {
+      this.addEdit.task = task
       this.addEdit.dialog = true
+    },
+    projectName(task) {
+      return this.projects.find((p) => p.id === task.project_id)?.name || 'Error'
     },
   },
 }

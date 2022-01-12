@@ -5,7 +5,7 @@
         <nuxt-link to="/home" class="d-flex" style="text-decoration: none; color: inherit">
           <div class="d-flex flex-column">
             <span class="mt-1 text-caption">KAIROS</span>
-            <span class="mt-n1 text-h5 font-weight-medium">{{ pageName }}</span>
+            <span class="mt-n1 text-h5 font-weight-bold">{{ pageName }}</span>
           </div>
         </nuxt-link>
 
@@ -74,7 +74,7 @@
       </v-container>
     </v-app-bar>
 
-    <v-main class="grey lighten-3">
+    <v-main class="shade">
       <v-container fluid>
         <v-row justify="center">
           <v-col cols="12" sm="11" lg="10">
@@ -146,6 +146,6 @@ export default {
 }
 
 body {
-  background-color: #eeeeee;
+  background-color: #f3f3f3;
 }
 </style>
