@@ -9,8 +9,8 @@ export const mutations = {
 }
 
 export const getters = {
-  fullName: (state) => {
-    if (!state.user) return ''
-    return state.user.firstname + ' ' + state.user.lastname
-  },
+  // fullName: (state) => {
+  //   if (!state.user) return ''
+  //   return state.user.firstname + ' ' + state.user.lastname
+  // },
 }

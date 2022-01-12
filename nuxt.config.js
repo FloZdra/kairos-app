@@ -1,5 +1,6 @@
 export default {
   ssr: false,
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - kairos-app',
@@ -57,7 +58,11 @@ export default {
   proxy: {
     '/api/': {
       target: `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}`,
-      // pathRewrite: { '^/api/': '' },
+      changeOrigin: true,
+    },
+    '/api2/': {
+      target: `${process.env.BACKEND_HOST}:${process.env.SPRINGBOOT_PORT}`,
+      pathRewrite: { '^/api2/': '/api/' },
       changeOrigin: true,
     },
   },
@@ -77,7 +82,7 @@ export default {
       dark: false,
       themes: {
         light: {
-          primary: '#3b82f6',
+          primary: '#031284',
           secondary: '#ec4899',
           info: '#facc15',
           warning: '#f97316',
@@ -91,4 +96,10 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost,
+    timing: false,
+  },
 }

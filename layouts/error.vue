@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-container>
+    <v-container fluid>
       <v-row>
-        <v-col class="py-10 text-h5 text-center font-weight-black">
+        <v-col class="py-10 text-h5 text-center font-weight-bold">
           {{ error && error.statusCode === 404 ? 'Page not found' : 'Internal server error' }}
         </v-col>
       </v-row>

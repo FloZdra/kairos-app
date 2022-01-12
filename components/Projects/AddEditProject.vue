@@ -1,17 +1,20 @@
 <template>
   <v-card>
     <v-card-title class="text-h5 font-weight-bold">
-      {{ (organisation ? 'Edit' : 'Create') + ' organisation' }}
+      {{ (project ? 'Edit' : 'Create') + ' project' }}
     </v-card-title>
     <v-form ref="form" v-model="formValid" lazy-validation autocomplete="off">
       <v-card-text>
         <v-text-field v-model="name" :rules="requiredRule" label="Name"></v-text-field>
 
-        <span class="d-block mt-3 text-caption font-weight-light">Color</span>
-        <v-color-picker v-model="color" dot-size="25" swatches-max-height="200"></v-color-picker>
+        <v-text-field
+          v-model="description"
+          :rules="requiredRule"
+          label="Description"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-btn v-if="organisation" text color="error" class="px-3" @click="delete_.dialog = true">
+        <v-btn v-if="project" text color="error" class="px-3" @click="delete_.dialog = true">
           Delete
         </v-btn>
         <v-spacer></v-spacer>
@@ -24,7 +27,7 @@
           color="primary"
           @click="submit"
         >
-          {{ organisation ? 'Edit' : 'Create' }}
+          {{ project ? 'Edit' : 'Create' }}
         </v-btn>
         <v-icon v-else-if="done" color="success" class="mx-3" large>mdi-check</v-icon>
         <span v-else-if="error" class="error--text mx-5">Error</span>
@@ -34,7 +37,7 @@
     <v-dialog v-model="delete_.dialog" max-width="300">
       <v-card>
         <v-card-title class="text-h5 font-weight-bold">Warning</v-card-title>
-        <v-card-text>Are you sure you want to delete this organisation?</v-card-text>
+        <v-card-text>Are you sure you want to delete this project?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -50,13 +53,11 @@
             :loading="delete_.loading"
             :disabled="delete_.loading"
             color="primary"
-            @click="deleteOrganisation"
+            @click="deleteProject"
           >
             Delete
           </v-btn>
-          <v-icon v-else-if="delete_.done" color="success" class="mx-3" large>
-            mdi-check
-          </v-icon>
+          <v-icon v-else-if="delete_.done" color="success" class="mx-3" large>mdi-check</v-icon>
           <span v-else-if="delete_.error" class="error--text mx-5">Error</span>
         </v-card-actions>
       </v-card>
@@ -66,9 +67,9 @@
 
 <script>
 export default {
-  name: 'AddEditOrganisation',
+  name: 'AddEditProject',
   props: {
-    organisation: {
+    project: {
       type: Object,
       default: null,
     },
@@ -78,7 +79,7 @@ export default {
       formValid: false,
       requiredRule: [(v) => !!v || 'Required!'],
       name: '',
-      color: '',
+      description: '',
       loading: false,
       done: false,
       error: false,
@@ -91,8 +92,8 @@ export default {
     }
   },
   mounted() {
-    this.name = this.organisation?.name || ''
-    this.color = this.organisation?.color || '#3b82f6ff'
+    this.name = this.project?.name || ''
+    this.description = this.project?.description || ''
   },
   methods: {
     async submit() {
@@ -100,15 +101,15 @@ export default {
       if (!this.formValid) return
       this.loading = true
       try {
-        if (this.organisation) {
-          await this.$axios.patch(`/api/organisations/${this.organisation.id}`, {
+        if (this.project) {
+          await this.$axios.patch(`/api/projects/${this.project.id}`, {
             name: this.name,
-            color: this.color,
+            description: this.description,
           })
         } else {
-          await this.$axios.post(`/api/organisations`, {
+          await this.$axios.post(`/api/projects`, {
             name: this.name,
-            color: this.color,
+            description: this.description,
           })
         }
         this.done = true
@@ -117,10 +118,10 @@ export default {
       }
       this.loading = false
     },
-    async deleteOrganisation() {
+    async deleteProject() {
       this.delete_.loading = true
       try {
-        await this.$axios.delete(`/api/organisations/${this.organisation.id}`)
+        await this.$axios.delete(`/api/projects/${this.project.id}`)
         this.delete_.done = true
       } catch (e) {
         this.delete_.error = true

@@ -1,25 +1,35 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="d-flex align-baseline">
-        <span class="text-h5 font-weight-black">{{ `Hello ${$store.getters.fullName}` }}</span>
+      <v-col>
+        <TaskPreview :projects="projects"></TaskPreview>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="py-0">
         <v-sheet min-height="70vh" rounded="lg" class="pa-2">
-          <ListProjects :projects="projects"></ListProjects>
+          <ListProjects
+            :projects="projects"
+            @new-project="newProject"
+            @edit-project="editProject"
+          ></ListProjects>
         </v-sheet>
       </v-col>
     </v-row>
+
+    <v-dialog v-if="addEdit.dialog" v-model="addEdit.dialog" max-width="350">
+      <AddEditProject :project="addEdit.project" @close="closeDialog"></AddEditProject>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import ListProjects from '@/components/Projects/ListProjects'
+import AddEditProject from '@/components/Projects/AddEditProject'
+import TaskPreview from '@/components/Tasks/TaskPreview'
 export default {
   name: 'HomePage',
-  components: { ListProjects },
+  components: { TaskPreview, AddEditProject, ListProjects },
   layout: 'default',
   middleware: 'auth',
   async asyncData({ $axios, error }) {
@@ -32,24 +42,28 @@ export default {
   },
   data() {
     return {
+      tasks: [],
       projects: [],
-      // organisationSelected: null,
-      // dialog: false,
+      addEdit: {
+        dialog: false,
+        project: false,
+      },
     }
   },
   methods: {
-    // async closeDialog(refresh) {
-    //   this.dialog = false
-    //   if (refresh) await this.$nuxt.refresh()
-    // },
-    // newOrganisation() {
-    //   this.organisationSelected = null
-    //   this.dialog = true
-    // },
-    // editOrganisation(org) {
-    //   this.organisationSelected = org
-    //   this.dialog = true
-    // },
+    async closeDialog(refresh) {
+      console.log('hey')
+      this.addEdit.dialog = false
+      if (refresh) await this.$nuxt.refresh()
+    },
+    newProject() {
+      this.addEdit.project = null
+      this.addEdit.dialog = true
+    },
+    editProject(project) {
+      this.addEdit.project = project
+      this.addEdit.dialog = true
+    },
   },
 }
 </script>
