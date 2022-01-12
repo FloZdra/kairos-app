@@ -3,6 +3,8 @@ import Router from 'vue-router'
 
 import WelcomePage from '@/pages/welcome'
 import HomePage from '@/pages/home'
+import ReportsPage from '@/pages/reports'
+import TimelinePage from '@/pages/timeline'
 
 Vue.use(Router)
 
@@ -19,6 +21,16 @@ export function createRouter() {
         path: '/home',
         component: HomePage,
         name: 'home-page',
+      },
+      {
+        path: '/reports',
+        component: ReportsPage,
+        name: 'reports-page',
+      },
+      {
+        path: '/timeline',
+        component: TimelinePage,
+        name: 'timeline-page',
       },
     ],
   })

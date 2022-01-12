@@ -83,7 +83,7 @@ export default {
       themes: {
         light: {
           primary: '#031284',
-          secondary: '#ec4899',
+          secondary: '#8250df',
           info: '#facc15',
           warning: '#f97316',
           error: '#dc2626',

@@ -12,26 +12,27 @@
         <v-spacer></v-spacer>
         <span class="primary--text text-body-2">See all</span>
       </div>
-      <v-divider></v-divider>
-      <div
-        v-for="(project, i) in projects"
-        :key="i"
-        v-ripple
-        class="d-flex align-start pa-3 text-body-2 text-truncate"
-        style="user-select: none; cursor: pointer"
-        @click="editProject(project)"
-      >
-        <v-icon size="18" left>mdi-view-list</v-icon>
-        <div>
-          <span>{{ project.name }}</span>
-          <v-icon small>mdi-circle-medium</v-icon>
-          <span class="text--secondary text-caption">{{ 'metadata' }}</span>
-          <br />
-          <span class="text--secondary text-caption">{{ project.description }}</span>
+      <div v-for="(project, i) in projects" :key="i">
+        <v-divider></v-divider>
+        <div
+          v-ripple
+          class="d-flex align-start pa-3 text-body-2 text-truncate"
+          style="user-select: none; cursor: pointer"
+          @click="editProject(project)"
+        >
+          <v-icon size="20" left>mdi-view-list</v-icon>
+          <div class="text-truncate">
+            <span>{{ project.name }}</span>
+            <!--            <v-icon small>mdi-circle-medium</v-icon>-->
+            <!--            <span class="text&#45;&#45;secondary text-caption">{{ 'metadata' }}</span>-->
+            <br />
+            <span class="text--secondary text-caption">{{ project.description }}</span>
+          </div>
         </div>
       </div>
-      <div v-if="projects.length === 0" class="d-flex align-center pa-3 text-body-2">
-        No project
+      <div v-if="projects.length === 0">
+        <v-divider></v-divider>
+        <div class="d-flex align-center pa-3 text-body-2">No projects</div>
       </div>
       <v-divider></v-divider>
       <v-card-text

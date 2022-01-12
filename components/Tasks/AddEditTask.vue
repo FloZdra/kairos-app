@@ -8,11 +8,11 @@
     @keydown.esc="closeDialog"
   >
     <v-card>
-      <v-card-title class="text-h5 font-weight-bold">
+      <v-card-title class="pt-5 pt-sm-4 text-h5 font-weight-bold">
         {{ (task ? 'Edit' : 'Create') + ' a task' }}
       </v-card-title>
 
-      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done">
+      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done || frozen">
         <v-card-text>
           <v-dialog
             ref="dialogDate"
@@ -111,6 +111,7 @@
             item-text="name"
             :rules="requiredRule"
             label="Project"
+            :readonly="!!task"
             :menu-props="{ top: false, offsetY: true }"
             return-object
           ></v-select>
@@ -120,7 +121,14 @@
           <v-text-field v-model="taskData.description" label="Description"></v-text-field>
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
-          <v-btn v-if="task" text color="error" class="px-3" @click="delete_.dialog = true">
+          <v-btn
+            v-if="task"
+            :disabled="loading || done || frozen"
+            text
+            color="error"
+            class="px-3"
+            @click="delete_.dialog = true"
+          >
             Delete
           </v-btn>
           <v-spacer></v-spacer>
@@ -128,7 +136,7 @@
           <v-btn
             class="px-3"
             :loading="loading"
-            :disabled="loading || done"
+            :disabled="loading || done || frozen"
             color="primary"
             @click="submit"
           >
@@ -216,6 +224,9 @@ export default {
   computed: {
     dateFormatted() {
       return DateTime.fromISO(this.taskData.date).toLocaleString(DateTime.DATE_MED)
+    },
+    frozen() {
+      return !!this.task?.frozen_month_id
     },
   },
   watch: {

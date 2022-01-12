@@ -12,29 +12,35 @@
         <v-spacer></v-spacer>
         <span class="primary--text text-body-2">See all</span>
       </div>
-      <v-divider></v-divider>
-      <div
-        v-for="(task, i) in tasks"
-        :key="i"
-        v-ripple
-        class="d-flex align-start pa-3 text-body-2 text-truncate"
-        style="user-select: none; cursor: pointer"
-        @click="editTask(task)"
-      >
-        <v-icon size="18" left :color="task.frozen ? '' : 'success'">
-          {{ task.frozen ? 'mdi-check-circle-outline' : 'mdi-record-circle-outline' }}
-        </v-icon>
-        <div>
-          <span>{{ task.name }}</span>
-          <v-icon small>mdi-circle-medium</v-icon>
-          <span class="text--secondary text-caption">{{ projectName(task) }}</span>
-          <br />
-          <span class="text--secondary text-caption">
-            {{ task.description || 'No description' }}
-          </span>
+      <div v-for="(task, i) in tasks" :key="i">
+        <v-divider></v-divider>
+        <div
+          v-ripple
+          class="d-flex align-start pa-3 text-body-2"
+          style="user-select: none; cursor: pointer"
+          @click="editTask(task)"
+        >
+          <v-icon size="20" left :color="task.frozen_month_id ? 'secondary' : 'success'">
+            {{ task.frozen_month_id ? 'mdi-check-circle-outline' : 'mdi-record-circle-outline' }}
+          </v-icon>
+          <div class="text-truncate">
+            <span>{{ task.name }}</span>
+            <!--            <v-icon small>mdi-circle-medium</v-icon>-->
+            <v-chip small label class="ml-2 px-2 primary--text" color="#e6f3fe">
+              {{ projectName(task) }}
+            </v-chip>
+            <br />
+            <span class="text--secondary text-caption">
+              {{ formatStartEnd(task) }}
+            </span>
+          </div>
         </div>
       </div>
-      <div v-if="tasks.length === 0" class="d-flex align-center pa-3 text-body-2">No record</div>
+      <div v-if="tasks.length === 0">
+        <v-divider></v-divider>
+        <div class="d-flex align-center pa-3 text-body-2">No tasks</div>
+      </div>
+
       <v-divider></v-divider>
       <v-card-text
         v-ripple
@@ -52,6 +58,7 @@
 </template>
 
 <script>
+import { DateTime } from 'luxon'
 import AddEditTask from '@/components/Tasks/AddEditTask'
 export default {
   name: 'ListTasks',
@@ -82,6 +89,15 @@ export default {
     },
     projectName(task) {
       return this.projects.find((p) => p.id === task.project_id)?.name || 'Error'
+    },
+    formatStartEnd(task) {
+      return (
+        DateTime.fromISO(task.start).toLocaleString(DateTime.DATE_MED) +
+        ', ' +
+        DateTime.fromISO(task.start).toFormat('HH:mm') +
+        ' - ' +
+        DateTime.fromISO(task.end).toFormat('HH:mm')
+      )
     },
   },
 }

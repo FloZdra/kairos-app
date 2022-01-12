@@ -55,6 +55,9 @@
               <span class="text-caption font-weight-medium">
                 {{ $store.state.user.full_name }}
               </span>
+              <span class="text--secondary" style="font-size: 10px">
+                {{ $store.state.user.email }}
+              </span>
               <span
                 class="text--secondary py-1 d-flex align-center justify-center"
                 style="font-size: 10px"
@@ -62,11 +65,8 @@
                 <v-icon small class="mr-1">mdi-account-circle</v-icon>
                 {{ $store.state.user.role }}
               </span>
-              <span class="text--secondary" style="font-size: 10px">
-                {{ $store.state.user.email }}
-              </span>
             </div>
-            <v-card-actions class="d-flex justify-center mt-2">
+            <v-card-actions class="d-flex justify-center">
               <v-btn x-small text color="error" @click="logout">Logout</v-btn>
             </v-card-actions>
           </v-card>
@@ -74,7 +74,7 @@
       </v-container>
     </v-app-bar>
 
-    <v-main class="shade">
+    <v-main class="shade pb-14">
       <v-container fluid>
         <v-row justify="center">
           <v-col cols="12" sm="11" lg="10">
@@ -83,6 +83,26 @@
         </v-row>
       </v-container>
     </v-main>
+
+    <v-bottom-navigation color="primary" background-color="shade" fixed>
+      <v-btn value="home" to="/home">
+        <span>Home</span>
+
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+
+      <v-btn value="reports" to="/reports">
+        <span>Reports</span>
+
+        <v-icon>mdi-file-clock</v-icon>
+      </v-btn>
+
+      <v-btn value="timeline" to="/timeline">
+        <span>Timeline</span>
+
+        <v-icon>mdi-calendar-text</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -101,6 +121,10 @@ export default {
       switch (this.$route.name) {
         case 'home-page':
           return 'Home'
+        case 'reports-page':
+          return 'Reports'
+        case 'timeline-page':
+          return 'Timeline'
       }
       return ''
     },

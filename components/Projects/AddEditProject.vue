@@ -8,7 +8,7 @@
     @keydown.esc="closeDialog"
   >
     <v-card>
-      <v-card-title class="text-h5 font-weight-bold">
+      <v-card-title class="pt-5 pt-sm-4 text-h5 font-weight-bold">
         {{ (project ? 'Edit' : 'Create') + ' a project' }}
       </v-card-title>
 
@@ -20,10 +20,21 @@
             label="Name"
           ></v-text-field>
 
-          <v-text-field v-model="projectData.description" label="Description"></v-text-field>
+          <v-text-field
+            v-model="projectData.description"
+            :rules="requiredRule"
+            label="Description"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
-          <v-btn v-if="project" text color="error" class="px-3" @click="delete_.dialog = true">
+          <v-btn
+            v-if="project"
+            text
+            color="error"
+            class="px-3"
+            :disabled="loading || done"
+            @click="delete_.dialog = true"
+          >
             Delete
           </v-btn>
           <v-spacer></v-spacer>
@@ -50,7 +61,7 @@
         <v-card-text>Are you sure you want to delete this project?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text class="px-3" @click="delete_.done ? closeDialog : (delete_.dialog = false)">
+          <v-btn text class="px-3" @click="delete_.done ? closeDialog() : (delete_.dialog = false)">
             Close
           </v-btn>
 
@@ -120,6 +131,7 @@ export default {
         this.projectData = defaultProject()
         this.done = false
         this.delete_.done = false
+        this.delete_.dialog = false
         this.$nuxt.refresh()
       }
       this.$refs.form.resetValidation()
@@ -135,12 +147,11 @@ export default {
             description: this.projectData.description,
           }
 
-          if (this.task) {
-            await this.$axios.patch(`/api/projects/${this.taskData.project.id}`, projectData)
+          if (this.project) {
+            await this.$axios.patch(`/api/projects/${this.project.id}`, projectData)
           } else {
             await this.$axios.post(`/api/projects`, projectData)
           }
-
           this.done = true
         }
       } catch (e) {
