@@ -10,31 +10,32 @@
     <v-card>
       <v-card-title class="text-h5 font-weight-medium">Add a task</v-card-title>
 
-      <v-form ref="form" v-model="formValid" lazy-validation>
+      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done">
         <v-card-text>
           <v-dialog
             ref="dialogDate"
             v-model="dialog.date"
-            :return-value.sync="date"
+            :return-value.sync="task.date"
             persistent
             width="290px"
           >
             <template #activator="{ on, attrs }">
               <v-text-field
-                :value="dateFormatted"
+                v-model="dateFormatted"
                 label="Date"
                 prepend-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
                 v-on="on"
               >
+                <span>Hello flo</span>
                 <template #message>hello</template>
               </v-text-field>
             </template>
-            <v-date-picker v-model="date" color="primary" scrollable>
+            <v-date-picker v-model="task.date" color="primary" scrollable>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="dialog.date = false">Cancel</v-btn>
-              <v-btn color="primary" @click="$refs.dialogDate.save(date)">OK</v-btn>
+              <v-btn color="primary" @click="$refs.dialogDate.save(task.date)">OK</v-btn>
             </v-date-picker>
           </v-dialog>
 
@@ -43,13 +44,13 @@
               <v-dialog
                 ref="dialogStart"
                 v-model="dialog.start"
-                :return-value.sync="start"
+                :return-value.sync="task.start"
                 persistent
                 width="290px"
               >
                 <template #activator="{ on, attrs }">
                   <v-text-field
-                    v-model="start"
+                    v-model="task.start"
                     label="Start"
                     prepend-icon="mdi-clock-time-four-outline"
                     readonly
@@ -58,10 +59,16 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-time-picker v-if="dialog.start" v-model="start" format="24hr" :max="end">
+                <v-time-picker
+                  v-if="dialog.start"
+                  v-model="task.start"
+                  format="24hr"
+                  color="primary"
+                  :max="task.end"
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="dialog.start = false">Cancel</v-btn>
-                  <v-btn color="primary" @click="$refs.dialogStart.save(start)">OK</v-btn>
+                  <v-btn color="primary" @click="$refs.dialogStart.save(task.start)">OK</v-btn>
                 </v-time-picker>
               </v-dialog>
             </v-col>
@@ -69,13 +76,13 @@
               <v-dialog
                 ref="dialogEnd"
                 v-model="dialog.end"
-                :return-value.sync="end"
+                :return-value.sync="task.end"
                 persistent
                 width="290px"
               >
                 <template #activator="{ on, attrs }">
                   <v-text-field
-                    v-model="end"
+                    v-model="task.end"
                     label="End"
                     prepend-icon="mdi-clock-time-seven-outline"
                     readonly
@@ -84,17 +91,23 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-time-picker v-if="dialog.end" v-model="end" format="24hr" :min="start">
+                <v-time-picker
+                  v-if="dialog.end"
+                  v-model="task.end"
+                  format="24hr"
+                  color="primary"
+                  :min="task.start"
+                >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="dialog.end = false">Cancel</v-btn>
-                  <v-btn color="primary" @click="$refs.dialogEnd.save(end)">OK</v-btn>
+                  <v-btn color="primary" @click="$refs.dialogEnd.save(task.end)">OK</v-btn>
                 </v-time-picker>
               </v-dialog>
             </v-col>
           </v-row>
 
           <v-select
-            v-model="project"
+            v-model="task.project"
             :items="projects"
             item-text="name"
             :rules="requiredRule"
@@ -103,17 +116,13 @@
             return-object
           ></v-select>
 
-          <v-text-field v-model="name" :rules="requiredRule" label="Name"></v-text-field>
+          <v-text-field v-model="task.name" :rules="requiredRule" label="Name"></v-text-field>
 
-          <v-text-field
-            v-model="description"
-            :rules="requiredRule"
-            label="Description"
-          ></v-text-field>
+          <v-text-field v-model="task.description" label="Description"></v-text-field>
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
           <v-spacer></v-spacer>
-          <v-btn text @click="closeDialog">Close</v-btn>
+          <v-btn text :disabled="loading" @click="closeDialog">Close</v-btn>
           <v-btn
             class="px-3"
             :loading="loading"
@@ -131,6 +140,16 @@
 
 <script>
 import { DateTime } from 'luxon'
+
+const defaultTask = () => ({
+  date: DateTime.now().toISODate(),
+  project: null,
+  start: '',
+  end: '',
+  name: '',
+  description: '',
+})
+
 export default {
   name: 'AddEditTask',
   props: {
@@ -147,28 +166,27 @@ export default {
     return {
       formValid: false,
       requiredRule: [(v) => !!v || 'Required!'],
-      project: null,
-      name: '',
-      description: '',
       dialog: {
         date: false,
         start: false,
         end: false,
       },
-      date: DateTime.now().toISODate(),
-      start: '',
-      end: '',
+      task: defaultTask(),
       loading: false,
+      done: false,
     }
   },
   computed: {
     dateFormatted() {
-      return DateTime.fromISO(this.date).toLocaleString(DateTime.DATE_MED)
+      return DateTime.fromISO(this.task.date).toLocaleString(DateTime.DATE_MED)
     },
   },
   methods: {
     closeDialog() {
-      // this.$refs.form.reset()
+      if (this.done) {
+        this.task = defaultTask()
+      }
+      this.$refs.form.resetValidation()
       this.$emit('input', false)
     },
     async submit() {
@@ -177,16 +195,22 @@ export default {
         await this.$refs.form.validate()
         if (this.formValid) {
           // Login with spring boot server
-          const response = await this.$axios.post(`/api/projects/${this.project.id}/tasks`, {
-            name: this.name,
-            description: this.description,
-            start: '2021-12-09T11:59:26.562+01:00',
-            end: '2021-12-09T12:22:00.562+01:00',
+          const start = DateTime.fromISO(this.task.date).plus({
+            hours: this.task.start.split(':')[0],
+            minutes: this.task.start.split(':')[1],
           })
-
-          // Store cookie and go home
-          document.cookie = `auth._token=${response.data.accessToken}`
-          return this.$router.push('/home')
+          const end = DateTime.fromISO(this.task.date).plus({
+            hours: this.task.end.split(':')[0],
+            minutes: this.task.end.split(':')[1],
+          })
+          console.log(end.toISO())
+          await this.$axios.post(`/api/projects/${this.task.project.id}/tasks`, {
+            name: this.task.name,
+            description: this.task.description,
+            start,
+            end,
+          })
+          this.done = true
         }
       } catch (e) {
         this.error = true

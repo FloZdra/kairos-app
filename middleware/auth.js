@@ -6,9 +6,15 @@ export default async function ({ store, redirect, $axios }) {
     return redirect('/')
   }
 
-  $axios.defaults.headers.common.Authorization = `Bearer ${ACCESS_TOKEN}`
-  const response = await $axios.get('/api/auth/user')
-  store.commit('SET_USER', response.data)
+  try {
+    $axios.defaults.headers.common.Authorization = `Bearer ${ACCESS_TOKEN}`
+    const response = await $axios.get('/api/auth/user')
+    store.commit('SET_USER', response.data)
+  } catch {
+    document.cookie = 'auth._token=null;expires=Thu, 01 Jan 1970 00:00:01 GMT'
+    delete $axios.defaults.headers.common.Authorization
+    return redirect('/')
+  }
 }
 
 function getCookie(name) {
