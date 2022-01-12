@@ -1,16 +1,16 @@
 <template>
   <div>
     <v-card>
-      <div class="d-flex align-baseline pa-3">
+      <div class="d-flex align-end pa-3">
         <!--        <v-img-->
         <!--          class="mr-2 align-self-center"-->
         <!--          src="/kairos-logo-clock.svg"-->
         <!--          height="24"-->
         <!--          max-width="24"-->
         <!--        />-->
-        <span class="text-h6 font-weight-bold">Reports</span>
+        <span class="text-h6 font-weight-bold">My reports</span>
         <v-spacer></v-spacer>
-        <span class="primary--text text-body-2">See all</span>
+        <v-btn text class="primary--text text-body-2">See all</v-btn>
       </div>
       <div v-for="(report, i) in reports" :key="i">
         <v-divider></v-divider>
@@ -20,7 +20,7 @@
           style="user-select: none; cursor: pointer"
           @click="editReport(report)"
         >
-          <v-icon size="20" left>mdi-file-clock</v-icon>
+          <v-icon size="20" left style="margin-top: 1px">mdi-file-clock</v-icon>
           <div class="text-truncate">
             <span>{{ reportMonth(report) }}</span>
             <!--            <v-icon small>mdi-circle-medium</v-icon>-->

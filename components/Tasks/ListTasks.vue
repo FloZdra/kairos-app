@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <div class="d-flex align-baseline pa-3">
+      <div class="d-flex align-end pa-3">
         <!--        <v-img-->
         <!--          class="mr-2 align-self-center"-->
         <!--          src="/kairos-logo-clock.svg"-->
@@ -10,7 +10,7 @@
         <!--        />-->
         <span class="text-h6 font-weight-bold">Recent tasks</span>
         <v-spacer></v-spacer>
-        <span class="primary--text text-body-2">See all</span>
+        <v-btn text class="primary--text text-body-2">See all</v-btn>
       </div>
       <div v-for="(task, i) in tasks" :key="i">
         <v-divider></v-divider>
@@ -20,7 +20,12 @@
           style="user-select: none; cursor: pointer"
           @click="editTask(task)"
         >
-          <v-icon size="20" left :color="task.frozen_month_id ? 'secondary' : 'success'">
+          <v-icon
+            size="20"
+            left
+            :color="task.frozen_month_id ? 'secondary' : 'success'"
+            style="margin-top: 1px"
+          >
             {{ task.frozen_month_id ? 'mdi-check-circle-outline' : 'mdi-record-circle-outline' }}
           </v-icon>
           <div class="text-truncate">

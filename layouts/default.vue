@@ -1,5 +1,11 @@
 <template>
   <v-app id="kairos-app">
+    <v-snackbar v-model="snackbar" top rounded="lg" color="error darken-1">
+      <div class="d-flex align-center">
+        <v-icon left>mdi-alert-circle-outline</v-icon>
+        <span>{{ error }}</span>
+      </div>
+    </v-snackbar>
     <v-app-bar app color="shade" height="70" elevate-on-scroll>
       <v-container class="pa-0 fill-height d-flex align-center">
         <nuxt-link to="/home" class="d-flex" style="text-decoration: none; color: inherit">
@@ -113,7 +119,8 @@ export default {
   data() {
     return {
       search: '',
-      links: ['Dashboard'],
+      snackbar: false,
+      error: '',
     }
   },
   computed: {
@@ -132,6 +139,16 @@ export default {
   beforeCreate() {
     // Define DateTime default locale
     Settings.defaultLocale = 'en'
+    this.$nuxt.$on('show-error', (e) => {
+      if (typeof e === 'object') this.error = e.response?.data?.message || 'An error occurred'
+      else if (typeof e === 'string') this.error = e
+      else this.error = 'An error occurred'
+      this.snackbar = true
+      // setTimeout(() => (this.snackbar = false), 5e3)
+    })
+  },
+  beforeDestroy() {
+    this.$nuxt.$off('show-error')
   },
   methods: {
     logout() {

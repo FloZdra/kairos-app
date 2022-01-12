@@ -4,11 +4,12 @@
     transition="dialog-bottom-transition"
     content-class="add-edit-dialog"
     scrollable
+    max-width="500"
     @click:outside="closeDialog"
     @keydown.esc="closeDialog"
   >
     <v-card>
-      <v-card-title class="pt-5 pt-sm-4 text-h5 font-weight-bold">
+      <v-card-title class="pt-5 text-h5 font-weight-bold">
         {{ (task ? 'Edit' : 'Create') + ' a task' }}
       </v-card-title>
 
@@ -285,7 +286,7 @@ export default {
           this.done = true
         }
       } catch (e) {
-        this.error = true
+        this.$nuxt.$emit('show-error', e)
       }
       this.loading = false
     },
@@ -294,7 +295,9 @@ export default {
       try {
         await this.$axios.delete(`/api/projects/${this.task.project_id}/tasks/${this.task.id}`)
         this.delete_.done = true
-      } catch {}
+      } catch (e) {
+        this.$nuxt.$emit('show-error', e)
+      }
       this.delete_.loading = false
     },
   },
