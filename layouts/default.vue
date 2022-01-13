@@ -1,11 +1,17 @@
 <template>
   <v-app id="kairos-app">
+    <v-snackbar v-model="snackbar" top rounded="lg" color="error darken-1">
+      <div class="d-flex align-center">
+        <v-icon left>mdi-alert-circle-outline</v-icon>
+        <span>{{ error }}</span>
+      </div>
+    </v-snackbar>
     <v-app-bar app color="shade" height="70" elevate-on-scroll>
       <v-container class="pa-0 fill-height d-flex align-center">
         <nuxt-link to="/home" class="d-flex" style="text-decoration: none; color: inherit">
           <div class="d-flex flex-column">
             <span class="mt-1 text-caption">KAIROS</span>
-            <span class="mt-n1 text-h5 font-weight-medium">{{ pageName }}</span>
+            <span class="mt-n1 text-h5 font-weight-bold">{{ pageName }}</span>
           </div>
         </nuxt-link>
 
@@ -55,6 +61,9 @@
               <span class="text-caption font-weight-medium">
                 {{ $store.state.user.full_name }}
               </span>
+              <span class="text--secondary" style="font-size: 10px">
+                {{ $store.state.user.email }}
+              </span>
               <span
                 class="text--secondary py-1 d-flex align-center justify-center"
                 style="font-size: 10px"
@@ -62,11 +71,8 @@
                 <v-icon small class="mr-1">mdi-account-circle</v-icon>
                 {{ $store.state.user.role }}
               </span>
-              <span class="text--secondary" style="font-size: 10px">
-                {{ $store.state.user.email }}
-              </span>
             </div>
-            <v-card-actions class="d-flex justify-center mt-2">
+            <v-card-actions class="d-flex justify-center">
               <v-btn x-small text color="error" @click="logout">Logout</v-btn>
             </v-card-actions>
           </v-card>
@@ -74,7 +80,7 @@
       </v-container>
     </v-app-bar>
 
-    <v-main class="grey lighten-3">
+    <v-main class="shade pb-14">
       <v-container fluid>
         <v-row justify="center">
           <v-col cols="12" sm="11" lg="10">
@@ -83,6 +89,26 @@
         </v-row>
       </v-container>
     </v-main>
+
+    <v-bottom-navigation color="primary" background-color="shade" fixed>
+      <v-btn value="home" to="/home">
+        <span>Home</span>
+
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+
+      <v-btn value="reports" to="/reports">
+        <span>Reports</span>
+
+        <v-icon>mdi-file-clock</v-icon>
+      </v-btn>
+
+      <v-btn value="timeline" to="/timeline">
+        <span>Timeline</span>
+
+        <v-icon>mdi-calendar-text</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -93,7 +119,8 @@ export default {
   data() {
     return {
       search: '',
-      links: ['Dashboard'],
+      snackbar: false,
+      error: '',
     }
   },
   computed: {
@@ -101,6 +128,10 @@ export default {
       switch (this.$route.name) {
         case 'home-page':
           return 'Home'
+        case 'reports-page':
+          return 'Reports'
+        case 'timeline-page':
+          return 'Timeline'
       }
       return ''
     },
@@ -108,6 +139,16 @@ export default {
   beforeCreate() {
     // Define DateTime default locale
     Settings.defaultLocale = 'en'
+    this.$nuxt.$on('show-error', (e) => {
+      if (typeof e === 'object') this.error = e.response?.data?.message || 'An error occurred'
+      else if (typeof e === 'string') this.error = e
+      else this.error = 'An error occurred'
+      this.snackbar = true
+      // setTimeout(() => (this.snackbar = false), 5e3)
+    })
+  },
+  beforeDestroy() {
+    this.$nuxt.$off('show-error')
   },
   methods: {
     logout() {
@@ -146,6 +187,6 @@ export default {
 }
 
 body {
-  background-color: #eeeeee;
+  background-color: #f3f3f3;
 }
 </style>

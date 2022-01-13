@@ -1,83 +1,83 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col class="d-flex align-baseline pb-0" cols="12">
-        <span class="font-weight-bold text-subtitle-1">Recents projects</span>
-      </v-col>
-      <v-col v-for="(project, i) in projects" :key="i" cols="12" sm="4" md="3">
-        <v-card
-          height="100"
-          color="primary"
-          class="d-flex flex-column org-card"
-          :to="{ path: `projects/${project.id}` }"
-          append
-          dark
+  <div>
+    <v-card>
+      <div class="d-flex align-end pa-3">
+        <!--        <v-img-->
+        <!--          class="mr-2 align-self-center"-->
+        <!--          src="/kairos-logo-clock.svg"-->
+        <!--          height="24"-->
+        <!--          max-width="24"-->
+        <!--        />-->
+        <span class="text-h6 font-weight-bold">Latest projects</span>
+        <v-spacer></v-spacer>
+        <v-btn text class="primary--text text-body-2">See all</v-btn>
+      </div>
+      <div v-for="(project, i) in projects" :key="i">
+        <v-divider></v-divider>
+        <div
+          v-ripple
+          class="d-flex align-start pa-3 text-body-2 text-truncate"
+          style="user-select: none; cursor: pointer"
+          @click="editProject(project)"
         >
-          <div style="position: absolute; right: 1px; top: 1px">
-            <v-btn icon @click.stop.prevent="$emit('edit-project', project)">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
+          <v-icon size="20" left style="margin-top: 1px">mdi-view-list</v-icon>
+          <div class="text-truncate">
+            <span>{{ project.name }}</span>
+            <!--            <v-icon small>mdi-circle-medium</v-icon>-->
+            <!--            <span class="text&#45;&#45;secondary text-caption">{{ 'metadata' }}</span>-->
+            <br />
+            <span class="text--secondary text-caption">{{ project.description }}</span>
           </div>
-          <v-card-title class="pb-0 text-subtitle-1 font-weight-bold d-inline text-truncate">
-            {{ project.name }}
-          </v-card-title>
-          <v-card-text class="text-caption">
-            {{ project.description }}
-          </v-card-text>
-          <v-spacer></v-spacer>
-          <!--          <v-card-actions>-->
-          <!--            <v-spacer></v-spacer>-->
-          <!--            <v-avatar-->
-          <!--              v-for="(user, idx) in org.users.slice(0, 3)"-->
-          <!--              :key="idx"-->
-          <!--              class="ml-n2"-->
-          <!--              :color="user.color"-->
-          <!--              size="32"-->
-          <!--            >-->
-          <!--              <span class="white&#45;&#45;text">{{ user.initials }}</span>-->
-          <!--            </v-avatar>-->
-          <!--            <span-->
-          <!--              v-if="org.users.length > 3"-->
-          <!--              class="text-caption ml-2"-->
-          <!--              :class="getTextColor(org.color)"-->
-          <!--            >-->
-          <!--              {{ `+${org.users.length - 3} more` }}-->
-          <!--            </span>-->
-          <!--          </v-card-actions>-->
-        </v-card>
-      </v-col>
-      <v-col v-if="projects.length === 0" cols="12">
-        <span class="text-body-2">You have no projects at this time.</span>
-      </v-col>
-      <v-col cols="12" sm="4" md="3">
-        <v-card height="100" class="d-flex flex-column" color="shade" @click="$emit('new-project')">
-          <v-card-title class="pb-0 text-subtitle-1 font-weight-bold">
-            <v-icon color="black" left>mdi-plus</v-icon>
-            Add
-          </v-card-title>
-          <v-card-text class="text-caption">Create new project</v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+        </div>
+      </div>
+      <div v-if="projects.length === 0">
+        <v-divider></v-divider>
+        <div class="d-flex align-center pa-3 text-body-2">No projects</div>
+      </div>
+      <v-divider></v-divider>
+      <v-card-text
+        v-ripple
+        class="pa-3 text-body-2"
+        style="user-select: none; cursor: pointer"
+        @click="newProject"
+      >
+        <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
+        <span>Add a project</span>
+      </v-card-text>
+    </v-card>
+
+    <AddEditProject v-model="addEdit.dialog" :project="addEdit.project"></AddEditProject>
+  </div>
 </template>
 
 <script>
+import AddEditProject from '@/components/Projects/AddEditProject'
 export default {
   name: 'ListProjects',
+  components: { AddEditProject },
   props: {
     projects: {
       type: Array,
       default: () => [],
     },
   },
+  data() {
+    return {
+      addEdit: { dialog: false, project: null },
+    }
+  },
   created() {},
-  methods: {},
+  methods: {
+    newProject() {
+      this.addEdit.project = null
+      this.addEdit.dialog = true
+    },
+    editProject(project) {
+      this.addEdit.project = project
+      this.addEdit.dialog = true
+    },
+  },
 }
 </script>
 
-<style scoped>
-.org-card {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(255, 255, 255, 0) 60%);
-}
-</style>
+<style scoped></style>

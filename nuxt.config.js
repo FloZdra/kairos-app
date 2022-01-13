@@ -83,12 +83,12 @@ export default {
       themes: {
         light: {
           primary: '#031284',
-          secondary: '#ec4899',
+          secondary: '#8250df',
           info: '#facc15',
           warning: '#f97316',
           error: '#dc2626',
-          success: '#10b981',
-          shade: '#eeeeee',
+          success: '#0ea977',
+          shade: '#f3f3f3',
         },
       },
     },
