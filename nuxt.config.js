@@ -63,7 +63,7 @@ export default {
     '/api2/': {
       target: `${process.env.SPRINGBOOT_HOST}:${process.env.SPRINGBOOT_PORT}`,
       pathRewrite: { '^/api2/': '/api/' },
-      changeOrigin: true,
+      changeOrigin: false,
     },
   },
   googleFonts: {
