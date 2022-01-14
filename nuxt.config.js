@@ -56,10 +56,10 @@ export default {
     // credentials: true,
   },
   proxy: {
-    '/api/': {
-      target: `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}`,
-      changeOrigin: true,
-    },
+    // '/api/': {
+    //   target: `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}`,
+    //   changeOrigin: true,
+    // },
     '/api2/': {
       target: `${process.env.SPRINGBOOT_HOST}:${process.env.SPRINGBOOT_PORT}`,
       pathRewrite: { '^/api2/': '/api/' },
