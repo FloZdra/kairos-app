@@ -58,12 +58,12 @@ export default {
   proxy: {
     '/api-adonis/': {
       target: `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}`,
-      pathRewrite: { '^/api-adonis/': '/' },
+      pathRewrite: { '^/api-adonis/': '/api/' },
       changeOrigin: true,
     },
-    '/api2/': {
+    '/api-spring/': {
       target: `${process.env.SPRINGBOOT_HOST}:${process.env.SPRINGBOOT_PORT}`,
-      pathRewrite: { '^/api2/': '/api/' },
+      pathRewrite: { '^/api-spring/': '/api/' },
       changeOrigin: true,
     },
   },

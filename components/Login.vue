@@ -60,7 +60,7 @@ export default {
         await this.$refs.form.validate()
         if (this.formValid) {
           // Login with spring boot server
-          const response = await this.$axios.post(`/api2/auth/login`, {
+          const response = await this.$axios.post(`/api-spring/auth/login`, {
             email: this.email,
             password: this.password,
           })
