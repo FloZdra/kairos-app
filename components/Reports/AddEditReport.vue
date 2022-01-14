@@ -168,7 +168,7 @@ export default {
         if (this.formValid) {
           if (this.report) {
             const response = await this.$axios.get(
-              `/api/users/${this.$store.state.user.id}/reports/${this.report.id}`,
+              `/api-adonis/users/${this.$store.state.user.id}/reports/${this.report.id}`,
               {
                 responseType: 'blob',
               }
@@ -180,7 +180,7 @@ export default {
             document.body.appendChild(link)
             link.click()
           } else {
-            await this.$axios.post(`/api/users/${this.$store.state.user.id}/reports`, {
+            await this.$axios.post(`/api-adonis/users/${this.$store.state.user.id}/reports`, {
               month: this.reportData.month,
             })
           }
@@ -196,7 +196,7 @@ export default {
       this.delete_.loading = true
       try {
         await this.$axios.delete(
-          `/api/users/${this.$store.state.user.id}/reports/${this.report.id}`
+          `/api-adonis/users/${this.$store.state.user.id}/reports/${this.report.id}`
         )
         this.delete_.done = true
       } catch (e) {

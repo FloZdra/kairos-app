@@ -148,9 +148,9 @@ export default {
           }
 
           if (this.project) {
-            await this.$axios.patch(`/api/projects/${this.project.id}`, projectData)
+            await this.$axios.patch(`/api-adonis/projects/${this.project.id}`, projectData)
           } else {
-            await this.$axios.post(`/api/projects`, projectData)
+            await this.$axios.post(`/api-adonis/projects`, projectData)
           }
           this.done = true
         }
@@ -162,7 +162,7 @@ export default {
     async deleteProject() {
       this.delete_.loading = true
       try {
-        await this.$axios.delete(`/api/projects/${this.project.id}`)
+        await this.$axios.delete(`/api-adonis/projects/${this.project.id}`)
         this.delete_.done = true
       } catch (e) {
         this.$nuxt.$emit('show-error', e)

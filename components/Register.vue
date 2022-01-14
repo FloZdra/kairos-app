@@ -68,7 +68,7 @@ export default {
 
         if (this.formValid) {
           this.loading = true
-          await this.$axios.post('/api/auth/register', {
+          await this.$axios.post('/api-adonis/auth/register', {
             firstname: this.firstname,
             lastname: this.lastname,
             email: this.email,

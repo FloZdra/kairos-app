@@ -8,7 +8,7 @@ export default async function ({ store, redirect, $axios }) {
 
   try {
     $axios.defaults.headers.common.Authorization = `Bearer ${ACCESS_TOKEN}`
-    const response = await $axios.get('/api/auth/user')
+    const response = await $axios.get('/api-adonis/auth/user')
     store.commit('SET_USER', response.data)
   } catch {
     document.cookie = 'auth._token=null;expires=Thu, 01 Jan 1970 00:00:01 GMT'
