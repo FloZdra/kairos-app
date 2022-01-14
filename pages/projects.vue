@@ -2,30 +2,30 @@
   <v-container>
     <v-row>
       <v-col>
-        <ListReports :reports="reports"></ListReports>
+        <ListProjects :projects="projects"></ListProjects>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ListReports from '@/components/Reports/ListReports'
+import ListProjects from '@/components/Projects/ListProjects'
 export default {
-  name: 'TasksPage',
-  components: { ListReports },
+  name: 'ProjectsPage',
+  components: { ListProjects },
   layout: 'default',
   middleware: 'auth',
-  async asyncData({ $axios, store, error }) {
+  async asyncData({ $axios, error }) {
     try {
-      const reports = await $axios.get(`/api-adonis/users/${store.state.user.id}/reports`)
-      return { reports: reports.data }
+      const projects = await $axios.get(`/api-adonis/projects`)
+      return { projects: projects.data }
     } catch (e) {
       return error({ statusCode: 500, message: 'Internal server error' })
     }
   },
   data() {
     return {
-      reports: [],
+      projects: [],
     }
   },
   methods: {},

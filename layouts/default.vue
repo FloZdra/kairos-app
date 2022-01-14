@@ -17,20 +17,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-responsive v-if="$vuetify.breakpoint.smAndUp" max-width="260">
-          <v-text-field
-            v-model="search"
-            class="text-caption"
-            rounded
-            placeholder="Search project"
-            hide-details
-            dark
-            background-color="primary"
-            @keydown.enter="lookup"
-          ></v-text-field>
-        </v-responsive>
-
-        <v-menu offset-y>
+        <v-menu offset-y left>
           <template #activator="{ on, attrs }">
             <v-avatar
               color="primary"
@@ -97,17 +84,29 @@
         <v-icon>mdi-home</v-icon>
       </v-btn>
 
+      <v-btn value="tasks" to="/tasks">
+        <span>Tasks</span>
+
+        <v-icon>mdi-view-headline</v-icon>
+      </v-btn>
+
+      <v-btn value="Projects" to="/Projects">
+        <span>Projects</span>
+
+        <v-icon>mdi-view-list</v-icon>
+      </v-btn>
+
       <v-btn value="reports" to="/reports">
         <span>Reports</span>
 
         <v-icon>mdi-file-clock</v-icon>
       </v-btn>
 
-      <v-btn value="timeline" to="/timeline">
-        <span>Timeline</span>
+      <!--      <v-btn value="timeline" to="/timeline">-->
+      <!--        <span>Timeline</span>-->
 
-        <v-icon>mdi-calendar-text</v-icon>
-      </v-btn>
+      <!--        <v-icon>mdi-calendar-text</v-icon>-->
+      <!--      </v-btn>-->
     </v-bottom-navigation>
   </v-app>
 </template>
@@ -128,10 +127,12 @@ export default {
       switch (this.$route.name) {
         case 'home-page':
           return 'Home'
+        case 'tasks-page':
+          return 'Tasks'
+        case 'projects-page':
+          return 'Projects'
         case 'reports-page':
           return 'Reports'
-        case 'timeline-page':
-          return 'Timeline'
       }
       return ''
     },

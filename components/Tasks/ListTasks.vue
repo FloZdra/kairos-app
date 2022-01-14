@@ -10,9 +10,12 @@
         <!--        />-->
         <span class="text-h6 font-weight-bold">Recent tasks</span>
         <v-spacer></v-spacer>
-        <v-btn text class="primary--text text-body-2">See all</v-btn>
+
+        <v-btn v-if="tasks.length > 0" text class="primary--text text-body-2" to="/tasks">
+          {{ `See all (${tasks.length})` }}
+        </v-btn>
       </div>
-      <div v-for="(task, i) in tasks" :key="i">
+      <div v-for="(task, i) in filteredTasks" :key="i">
         <v-divider></v-divider>
         <div
           v-ripple
@@ -77,11 +80,23 @@ export default {
       type: Array,
       default: () => [],
     },
+    limit: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
       addEdit: { dialog: false, task: null },
     }
+  },
+  computed: {
+    filteredTasks() {
+      if (this.limit) {
+        return this.tasks.slice(0, +this.limit)
+      }
+      return this.tasks
+    },
   },
   methods: {
     addTask() {

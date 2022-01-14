@@ -10,9 +10,11 @@
         <!--        />-->
         <span class="text-h6 font-weight-bold">My reports</span>
         <v-spacer></v-spacer>
-        <v-btn text class="primary--text text-body-2">See all</v-btn>
+        <v-btn v-if="reports.length > 0" text class="primary--text text-body-2" to="/reports">
+          {{ `See all (${reports.length})` }}
+        </v-btn>
       </div>
-      <div v-for="(report, i) in reports" :key="i">
+      <div v-for="(report, i) in filteredReports" :key="i">
         <v-divider></v-divider>
         <div
           v-ripple
@@ -72,11 +74,23 @@ export default {
       type: Array,
       default: () => [],
     },
+    limit: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
       addEdit: { dialog: false, report: null },
     }
+  },
+  computed: {
+    filteredReports() {
+      if (this.limit) {
+        return this.reports.slice(0, +this.limit)
+      }
+      return this.reports
+    },
   },
   methods: {
     addReport() {

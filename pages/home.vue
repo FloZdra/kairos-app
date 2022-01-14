@@ -2,17 +2,13 @@
   <v-container>
     <v-row>
       <v-col>
-        <ListTasks :projects="projects" :tasks="tasks"></ListTasks>
+        <ListTasks :projects="projects" :tasks="tasks" limit="5"></ListTasks>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
-        <ListProjects :projects="projects"></ListProjects>
+        <ListProjects :projects="projects" limit="5"></ListProjects>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
-        <ListReports :projects="projects" :reports="reports"></ListReports>
+        <ListReports :projects="projects" :reports="reports" limit="5"></ListReports>
       </v-col>
     </v-row>
   </v-container>

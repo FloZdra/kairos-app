@@ -2,23 +2,17 @@
   <v-container>
     <v-row>
       <v-col>
-        <TaskPreview :projects="projects" :tasks="tasks"></TaskPreview>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <ListProjects :projects="projects"></ListProjects>
+        <ListTasks :projects="projects" :tasks="tasks"></ListTasks>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ListProjects from '@/components/Projects/ListProjects'
-import TaskPreview from '@/components/Tasks/ListTasks'
+import ListTasks from '@/components/Tasks/ListTasks'
 export default {
-  name: 'TimelinePage',
-  components: { TaskPreview, ListProjects },
+  name: 'TasksPage',
+  components: { ListTasks },
   layout: 'default',
   middleware: 'auth',
   async asyncData({ $axios, store, error }) {

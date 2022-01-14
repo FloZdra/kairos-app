@@ -10,7 +10,10 @@
         <!--        />-->
         <span class="text-h6 font-weight-bold">Latest projects</span>
         <v-spacer></v-spacer>
-        <v-btn text class="primary--text text-body-2">See all</v-btn>
+
+        <v-btn v-if="projects.length > 0" text class="primary--text text-body-2" to="/projects">
+          {{ `See all (${projects.length})` }}
+        </v-btn>
       </div>
       <div v-for="(project, i) in projects" :key="i">
         <v-divider></v-divider>
@@ -60,13 +63,24 @@ export default {
       type: Array,
       default: () => [],
     },
+    limit: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
       addEdit: { dialog: false, project: null },
     }
   },
-  created() {},
+  computed: {
+    filteredProjects() {
+      if (this.limit) {
+        return this.projects.slice(0, +this.limit)
+      }
+      return this.projects
+    },
+  },
   methods: {
     newProject() {
       this.addEdit.project = null
