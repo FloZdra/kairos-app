@@ -11,7 +11,7 @@
         <span class="text-h6 font-weight-bold">Recent tasks</span>
         <v-spacer></v-spacer>
 
-        <v-btn v-if="tasks.length > 0" text class="primary--text text-body-2" to="/tasks">
+        <v-btn v-if="tasks.length > 0 && limit" text class="primary--text text-body-2" to="/tasks">
           {{ `See all (${tasks.length})` }}
         </v-btn>
       </div>

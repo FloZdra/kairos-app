@@ -10,7 +10,7 @@
         <!--        />-->
         <span class="text-h6 font-weight-bold">My reports</span>
         <v-spacer></v-spacer>
-        <v-btn v-if="reports.length > 0" text class="primary--text text-body-2" to="/reports">
+        <v-btn v-if="reports.length > 0 && limit" text class="primary--text text-body-2" to="/reports">
           {{ `See all (${reports.length})` }}
         </v-btn>
       </div>
