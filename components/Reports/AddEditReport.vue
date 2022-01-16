@@ -17,7 +17,7 @@
         ref="form"
         v-model="formValid"
         lazy-validation
-        :disabled="loading || done || !!report"
+        :disabled="loading || done || !!report || readOnly"
       >
         <v-card-text>
           <v-dialog
@@ -51,7 +51,14 @@
           </v-dialog>
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
-          <v-btn v-if="report" text color="error" class="px-3" @click="delete_.dialog = true">
+          <v-btn
+            v-if="report"
+            text
+            color="error"
+            class="px-3"
+            :disabled="readOnly"
+            @click="delete_.dialog = true"
+          >
             Delete
           </v-btn>
           <v-spacer></v-spacer>
@@ -59,8 +66,9 @@
           <v-btn
             class="px-3"
             :loading="loading"
-            :disabled="loading || done"
+            :disabled="loading || done || readOnly"
             color="primary"
+            type="submit"
             @click="submit"
           >
             <v-icon v-if="done">mdi-check</v-icon>
@@ -115,6 +123,14 @@ export default {
       type: Object,
       default: null,
     },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
+    user: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -166,9 +182,11 @@ export default {
       try {
         await this.$refs.form?.validate()
         if (this.formValid) {
+          const userId = this.user?.id || this.$store.state.user.id
+
           if (this.report) {
             const response = await this.$axios.get(
-              `/api-adonis/users/${this.$store.state.user.id}/reports/${this.report.id}`,
+              `/api-adonis/users/${userId}/reports/${this.report.id}`,
               {
                 responseType: 'blob',
               }
@@ -180,7 +198,7 @@ export default {
             document.body.appendChild(link)
             link.click()
           } else {
-            await this.$axios.post(`/api-adonis/users/${this.$store.state.user.id}/reports`, {
+            await this.$axios.post(`/api-adonis/users/${userId}/reports`, {
               month: this.reportData.month,
             })
           }
@@ -195,9 +213,8 @@ export default {
     async deleteReport() {
       this.delete_.loading = true
       try {
-        await this.$axios.delete(
-          `/api-adonis/users/${this.$store.state.user.id}/reports/${this.report.id}`
-        )
+        const userId = this.user?.id || this.$store.state.user.id
+        await this.$axios.delete(`/api-adonis/users/${userId}/reports/${this.report.id}`)
         this.delete_.done = true
       } catch (e) {
         this.$nuxt.$emit('show-error', e)

@@ -13,7 +13,7 @@
         {{ (task ? 'Edit' : 'Create') + ' a task' }}
       </v-card-title>
 
-      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done || frozen">
+      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done || frozen || readOnly">
         <v-card-text>
           <v-dialog
             ref="dialogDate"
@@ -124,7 +124,7 @@
         <v-card-actions class="px-4 pb-8">
           <v-btn
             v-if="task"
-            :disabled="loading || done || frozen"
+            :disabled="loading || done || frozen || readOnly"
             text
             color="error"
             class="px-3"
@@ -137,8 +137,9 @@
           <v-btn
             class="px-3"
             :loading="loading"
-            :disabled="loading || done || frozen"
+            :disabled="loading || done || frozen || readOnly"
             color="primary"
+            type="submit"
             @click="submit"
           >
             <v-icon v-if="done">mdi-check</v-icon>
@@ -202,6 +203,10 @@ export default {
       type: Object,
       default: null,
     },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -281,7 +286,10 @@ export default {
               taskData
             )
           } else {
-            await this.$axios.post(`/api-adonis/projects/${this.taskData.project.id}/tasks`, taskData)
+            await this.$axios.post(
+              `/api-adonis/projects/${this.taskData.project.id}/tasks`,
+              taskData
+            )
           }
           this.done = true
         }
@@ -293,7 +301,9 @@ export default {
     async deleteTask() {
       this.delete_.loading = true
       try {
-        await this.$axios.delete(`/api-adonis/projects/${this.task.project_id}/tasks/${this.task.id}`)
+        await this.$axios.delete(
+          `/api-adonis/projects/${this.task.project_id}/tasks/${this.task.id}`
+        )
         this.delete_.done = true
       } catch (e) {
         this.$nuxt.$emit('show-error', e)

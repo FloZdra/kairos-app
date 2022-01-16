@@ -6,65 +6,57 @@
         <span>{{ error }}</span>
       </div>
     </v-snackbar>
-    <v-app-bar app color="shade" height="70" elevate-on-scroll>
-      <v-container class="pa-0 fill-height d-flex align-center">
-        <nuxt-link to="/home" class="d-flex" style="text-decoration: none; color: inherit">
-          <div class="d-flex flex-column">
-            <span class="mt-1 text-caption">KAIROS</span>
-            <span class="mt-n1 text-h5 font-weight-bold">{{ pageName }}</span>
-          </div>
-        </nuxt-link>
+    <v-app-bar app color="shade" height="80">
+      <nuxt-link to="/home" class="d-flex" style="text-decoration: none; color: inherit">
+        <v-img src="/kairos-logo-clock.svg" width="45" contain></v-img>
+        <span class="ml-4 align-self-end font-weight-black primary--text text-h4">Kairos</span>
+      </nuxt-link>
 
-        <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-        <v-menu offset-y left>
-          <template #activator="{ on, attrs }">
+      <v-menu v-if="$store.state.user" offset-y left>
+        <template #activator="{ on, attrs }">
+          <v-avatar
+            color="primary"
+            size="45"
+            class="ml-4 my-1 elevation-6"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <span class="white--text text-body-1 font-weight-medium">
+              {{ $store.state.user.initials }}
+            </span>
+          </v-avatar>
+        </template>
+        <v-card width="240">
+          <v-card-title class="pa-0 shade">
             <v-avatar
               color="primary"
-              size="45"
-              class="ml-4 my-1 elevation-6"
-              v-bind="attrs"
-              v-on="on"
+              size="40"
+              class="mt-3 mx-auto mb-n5"
+              style="border: solid 2px white"
             >
               <span class="white--text text-body-1 font-weight-medium">
                 {{ $store.state.user.initials }}
               </span>
             </v-avatar>
-          </template>
-          <v-card width="240">
-            <v-card-title class="pa-0 shade">
-              <v-avatar
-                color="primary"
-                size="40"
-                class="mt-3 mx-auto mb-n5"
-                style="border: solid 2px white"
-              >
-                <span class="white--text text-body-1 font-weight-medium">
-                  {{ $store.state.user.initials }}
-                </span>
-              </v-avatar>
-            </v-card-title>
-            <div class="mt-7 px-3 text-center d-flex flex-column">
-              <span class="text-caption font-weight-medium">
-                {{ $store.state.user.full_name }}
-              </span>
-              <span class="text--secondary" style="font-size: 10px">
-                {{ $store.state.user.email }}
-              </span>
-              <span
-                class="text--secondary py-1 d-flex align-center justify-center"
-                style="font-size: 10px"
-              >
-                <v-icon small class="mr-1">mdi-account-circle</v-icon>
-                {{ $store.state.user.role }}
-              </span>
-            </div>
-            <v-card-actions class="d-flex justify-center">
-              <v-btn x-small text color="error" @click="logout">Logout</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </v-container>
+          </v-card-title>
+          <div class="mt-7 px-3 text-center d-flex flex-column" style="gap: 5px">
+            <span class="text-caption font-weight-medium">
+              {{ $store.state.user.full_name }}
+            </span>
+            <span class="text--secondary" style="font-size: 10px">
+              {{ $store.state.user.email }}
+            </span>
+            <span class="text--secondary py-1 d-flex align-center justify-center">
+              <UserRole :role="$store.state.user.role"></UserRole>
+            </span>
+          </div>
+          <v-card-actions class="d-flex justify-center">
+            <v-btn small text color="error" @click="logout">Logout</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
     </v-app-bar>
 
     <v-main class="shade pb-14">
@@ -84,22 +76,25 @@
         <v-icon>mdi-home</v-icon>
       </v-btn>
 
-      <v-btn value="tasks" to="/tasks">
-        <span>Tasks</span>
+      <v-btn
+        v-if="$store.getters.isManager"
+        value="manager"
+        :to="`/managers/${$store.state.user.id}`"
+      >
+        <span>My team</span>
 
-        <v-icon>mdi-view-headline</v-icon>
+        <v-icon>mdi-account-multiple</v-icon>
       </v-btn>
 
-      <v-btn value="Projects" to="/Projects">
-        <span>Projects</span>
+      <v-btn v-if="$store.getters.isAdmin" value="managers" :to="`/managers`">
+        <span>Managers</span>
 
-        <v-icon>mdi-view-list</v-icon>
+        <v-icon>mdi-account-multiple</v-icon>
       </v-btn>
+      <v-btn v-if="$store.getters.isAdmin" value="admin" :to="`/admin`">
+        <span>Admin panel</span>
 
-      <v-btn value="reports" to="/reports">
-        <span>Reports</span>
-
-        <v-icon>mdi-file-clock</v-icon>
+        <v-icon>mdi-table-cog</v-icon>
       </v-btn>
 
       <!--      <v-btn value="timeline" to="/timeline">-->
@@ -122,21 +117,6 @@ export default {
       error: '',
     }
   },
-  computed: {
-    pageName() {
-      switch (this.$route.name) {
-        case 'home-page':
-          return 'Home'
-        case 'tasks-page':
-          return 'Tasks'
-        case 'projects-page':
-          return 'Projects'
-        case 'reports-page':
-          return 'Reports'
-      }
-      return ''
-    },
-  },
   beforeCreate() {
     // Define DateTime default locale
     Settings.defaultLocale = 'en'
@@ -156,10 +136,6 @@ export default {
       document.cookie = 'auth._token=null;expires=Thu, 01 Jan 1970 00:00:01 GMT'
       delete this.$axios.defaults.headers.common.Authorization
       return this.$router.push('/')
-    },
-
-    async lookup() {
-      await this.$router.push(`/home/lookup/${this.search}`)
     },
   },
 }

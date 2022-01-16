@@ -25,6 +25,7 @@
           :loading="loading"
           :disabled="loading"
           color="primary"
+          type="submit"
           @click="submitLogin"
         >
           Login

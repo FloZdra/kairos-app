@@ -1,32 +1,32 @@
 <template>
   <v-container fluid>
-    <PageTitle>Projects</PageTitle>
+    <PageTitle>Managers</PageTitle>
     <v-row>
       <v-col>
-        <ListProjects :projects="projects"></ListProjects>
+        <ListUsers :users="managers" managers></ListUsers>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ListProjects from '@/components/Projects/ListProjects'
+import ListUsers from '@/components/Users/ListUsers'
 export default {
-  name: 'ProjectsPage',
-  components: { ListProjects },
+  name: 'ManagersPage',
+  components: { ListUsers },
   layout: 'default',
-  middleware: 'auth',
+  middleware: ['auth', 'admin'],
   async asyncData({ $axios, error }) {
     try {
-      const projects = await $axios.get(`/api-adonis/projects`)
-      return { projects: projects.data }
+      const users = await $axios.get(`/api-adonis/users`)
+      return { managers: users.data.filter((u) => u.role === 'MANAGER') }
     } catch (e) {
       return error({ statusCode: 500, message: 'Internal server error' })
     }
   },
   data() {
     return {
-      projects: [],
+      managers: [],
     }
   },
   methods: {},

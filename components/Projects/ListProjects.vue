@@ -1,20 +1,17 @@
 <template>
   <div>
-    <v-card>
-      <div class="d-flex align-end pa-3">
-        <!--        <v-img-->
-        <!--          class="mr-2 align-self-center"-->
-        <!--          src="/kairos-logo-clock.svg"-->
-        <!--          height="24"-->
-        <!--          max-width="24"-->
-        <!--        />-->
-        <span class="text-h6 font-weight-bold">Latest projects</span>
+    <v-card class="overflow-hidden">
+      <div class="d-flex align-center pa-3">
+        <span class="text-h6 font-weight-bold text-no-wrap">
+          {{ recent ? 'Recent projects' : 'Projects' }}
+        </span>
         <v-spacer></v-spacer>
 
         <v-btn
-          v-if="projects.length > 0 && limit"
+          v-if="projects.length > 0 && recent"
           text
-          class="primary--text text-body-2"
+          class="primary--text text-caption"
+          small
           to="/projects"
         >
           {{ `See all (${projects.length})` }}
@@ -24,12 +21,12 @@
         <v-divider></v-divider>
         <div
           v-ripple
-          class="d-flex align-start pa-3 text-body-2 text-truncate"
+          class="d-flex align-start pa-3 text-body-2"
           style="user-select: none; cursor: pointer"
           @click="editProject(project)"
         >
           <v-icon size="20" left style="margin-top: 1px">mdi-view-list</v-icon>
-          <div class="text-truncate">
+          <div class="text-no-wrap">
             <span>{{ project.name }}</span>
             <!--            <v-icon small>mdi-circle-medium</v-icon>-->
             <!--            <span class="text&#45;&#45;secondary text-caption">{{ 'metadata' }}</span>-->
@@ -42,19 +39,26 @@
         <v-divider></v-divider>
         <div class="d-flex align-center pa-3 text-body-2">No projects</div>
       </div>
-      <v-divider></v-divider>
-      <v-card-text
-        v-ripple
-        class="pa-3 text-body-2"
-        style="user-select: none; cursor: pointer"
-        @click="newProject"
-      >
-        <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
-        <span>Add a project</span>
-      </v-card-text>
+
+      <div v-if="!readOnly">
+        <v-divider></v-divider>
+        <v-card-text
+          v-ripple
+          class="pa-3 text-body-2"
+          style="user-select: none; cursor: pointer"
+          @click="newProject"
+        >
+          <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
+          <span>Add a project</span>
+        </v-card-text>
+      </div>
     </v-card>
 
-    <AddEditProject v-model="addEdit.dialog" :project="addEdit.project"></AddEditProject>
+    <AddEditProject
+      v-model="addEdit.dialog"
+      :project="addEdit.project"
+      :read-only="readOnly"
+    ></AddEditProject>
   </div>
 </template>
 
@@ -68,9 +72,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    limit: {
-      type: [String, Number],
-      default: null,
+    recent: {
+      type: Boolean,
+      default: false,
+    },
+    readOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -80,8 +88,8 @@ export default {
   },
   computed: {
     filteredProjects() {
-      if (this.limit) {
-        return this.projects.slice(0, +this.limit)
+      if (this.recent) {
+        return this.projects.slice(0, 5)
       }
       return this.projects
     },

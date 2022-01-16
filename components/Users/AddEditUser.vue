@@ -10,30 +10,41 @@
   >
     <v-card>
       <v-card-title class="pt-5 text-h5 font-weight-bold">
-        {{ (project ? 'Edit' : 'Create') + ' a project' }}
+        {{
+          (user ? 'Edit ' : 'Create ') +
+          (roleAdmin ? 'an admin' : roleManager ? 'a manager' : 'a user')
+        }}
       </v-card-title>
 
-      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done || readOnly">
+      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done">
         <v-card-text>
           <v-text-field
-            v-model="projectData.name"
+            v-model="userData.firstname"
             :rules="requiredRule"
-            label="Name"
+            label="Firstname"
           ></v-text-field>
-
           <v-text-field
-            v-model="projectData.description"
+            v-model="userData.lastname"
             :rules="requiredRule"
-            label="Description"
+            label="Lastname"
+          ></v-text-field>
+          <v-text-field v-model="userData.email" :rules="requiredRule" label="Email"></v-text-field>
+          <v-text-field
+            v-if="!user"
+            v-model="userData.password"
+            :rules="requiredRule"
+            label="Password"
+            type="password"
+            autocomplete="new-password"
           ></v-text-field>
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
           <v-btn
-            v-if="project"
+            v-if="user"
+            :disabled="loading || done"
             text
             color="error"
             class="px-3"
-            :disabled="loading || done || readOnly"
             @click="delete_.dialog = true"
           >
             Delete
@@ -43,24 +54,24 @@
           <v-btn
             class="px-3"
             :loading="loading"
-            :disabled="loading || done || readOnly"
+            :disabled="loading || done"
             color="primary"
             type="submit"
             @click="submit"
           >
             <v-icon v-if="done">mdi-check</v-icon>
             <span v-else>
-              {{ project ? 'Edit' : 'Create' }}
+              {{ user ? 'Edit' : 'Create' }}
             </span>
           </v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
 
-    <v-dialog v-if="project" v-model="delete_.dialog" max-width="300" persistent>
+    <v-dialog v-if="user" v-model="delete_.dialog" max-width="300" persistent>
       <v-card>
         <v-card-title class="text-h5 font-weight-bold">Warning</v-card-title>
-        <v-card-text>Are you sure you want to delete this project?</v-card-text>
+        <v-card-text>Are you sure you want to delete this user?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text class="px-3" @click="delete_.done ? closeDialog() : (delete_.dialog = false)">
@@ -71,7 +82,7 @@
             class="error px-3"
             :loading="delete_.loading"
             :disabled="delete_.loading || delete_.done"
-            @click="deleteProject"
+            @click="deleteUser"
           >
             <v-icon v-if="delete_.done">mdi-check</v-icon>
             <span v-else>Delete</span>
@@ -83,32 +94,38 @@
 </template>
 
 <script>
-const defaultProject = () => ({
-  name: '',
-  description: '',
+const defaultUser = () => ({
+  email: '',
+  password: '',
+  firstname: '',
+  lastname: '',
 })
 
 export default {
-  name: 'AddEditProject',
+  name: 'AddEditUser',
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    project: {
+    user: {
       type: Object,
       default: null,
     },
-    readOnly: {
-      type: Boolean,
-      default: false,
-    }
+    role: {
+      type: String,
+      default: 'USER',
+    },
+    managerId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
       formValid: false,
       requiredRule: [(v) => !!v || 'Required!'],
-      projectData: defaultProject(),
+      userData: defaultUser(),
       loading: false,
       done: false,
       delete_: {
@@ -118,14 +135,23 @@ export default {
       },
     }
   },
+  computed: {
+    roleAdmin() {
+      return this.role === 'ADMIN'
+    },
+    roleManager() {
+      return this.role === 'MANAGER'
+    },
+  },
   watch: {
-    project() {
-      this.projectData = this.project
+    user() {
+      this.userData = this.user
         ? {
-            name: this.project.name,
-            description: this.project.description,
+            email: this.user.email,
+            firstname: this.user.firstname,
+            lastname: this.user.lastname,
           }
-        : defaultProject()
+        : defaultUser()
 
       this.$refs.form?.resetValidation()
     },
@@ -133,10 +159,9 @@ export default {
   methods: {
     closeDialog() {
       if (this.done || this.delete_.done) {
-        this.projectData = defaultProject()
+        this.userData = defaultUser()
         this.done = false
         this.delete_.done = false
-        this.delete_.dialog = false
         this.$nuxt.refresh()
       }
       this.$refs.form.resetValidation()
@@ -147,15 +172,19 @@ export default {
       try {
         await this.$refs.form?.validate()
         if (this.formValid) {
-          const projectData = {
-            name: this.projectData.name,
-            description: this.projectData.description,
+          const userData = {
+            email: this.userData.email,
+            password: this.userData.password,
+            firstname: this.userData.firstname,
+            lastname: this.userData.lastname,
+            role: this.role,
+            manager_id: this.managerId,
           }
 
-          if (this.project) {
-            await this.$axios.patch(`/api-adonis/projects/${this.project.id}`, projectData)
+          if (this.user) {
+            await this.$axios.patch(`/api-adonis/users/${this.user.id}`, userData)
           } else {
-            await this.$axios.post(`/api-adonis/projects`, projectData)
+            await this.$axios.post(`/api-adonis/users`, userData)
           }
           this.done = true
         }
@@ -164,10 +193,10 @@ export default {
       }
       this.loading = false
     },
-    async deleteProject() {
+    async deleteUser() {
       this.delete_.loading = true
       try {
-        await this.$axios.delete(`/api-adonis/projects/${this.project.id}`)
+        await this.$axios.delete(`/api-adonis/users/${this.user.id}`)
         this.delete_.done = true
       } catch (e) {
         this.$nuxt.$emit('show-error', e)

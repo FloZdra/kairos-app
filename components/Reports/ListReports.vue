@@ -1,16 +1,18 @@
 <template>
   <div>
-    <v-card>
-      <div class="d-flex align-end pa-3">
-        <!--        <v-img-->
-        <!--          class="mr-2 align-self-center"-->
-        <!--          src="/kairos-logo-clock.svg"-->
-        <!--          height="24"-->
-        <!--          max-width="24"-->
-        <!--        />-->
-        <span class="text-h6 font-weight-bold">My reports</span>
+    <v-card class="overflow-hidden">
+      <div class="d-flex align-center pa-3">
+        <span class="text-h6 font-weight-bold text-no-wrap">
+          {{ recent ? 'Recent reports' : 'Reports' }}
+        </span>
         <v-spacer></v-spacer>
-        <v-btn v-if="reports.length > 0 && limit" text class="primary--text text-body-2" to="/reports">
+        <v-btn
+          v-if="reports.length > 0 && recent"
+          text
+          class="primary--text text-caption"
+          small
+          to="/reports"
+        >
           {{ `See all (${reports.length})` }}
         </v-btn>
       </div>
@@ -18,12 +20,12 @@
         <v-divider></v-divider>
         <div
           v-ripple
-          class="d-flex align-start pa-3 text-body-2 text-truncate"
+          class="d-flex align-start pa-3 text-body-2"
           style="user-select: none; cursor: pointer"
           @click="editReport(report)"
         >
           <v-icon size="20" left style="margin-top: 1px">mdi-file-clock</v-icon>
-          <div class="text-truncate">
+          <div class="text-no-wrap">
             <span>{{ reportMonth(report) }}</span>
             <!--            <v-icon small>mdi-circle-medium</v-icon>-->
             <!--            <span class="text&#45;&#45;secondary text-caption">{{ nbTasks(report) }}</span>-->
@@ -39,22 +41,26 @@
         <div class="d-flex align-center pa-3 text-body-2">No reports</div>
       </div>
 
-      <v-divider></v-divider>
-      <v-card-text
-        v-ripple
-        class="pa-3 text-body-2"
-        style="user-select: none; cursor: pointer"
-        @click="addReport"
-      >
-        <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
-        <span>Add a report</span>
-      </v-card-text>
+      <div v-if="!readOnly">
+        <v-divider></v-divider>
+        <v-card-text
+          v-ripple
+          class="pa-3 text-body-2"
+          style="user-select: none; cursor: pointer"
+          @click="addReport"
+        >
+          <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
+          <span>Add a report</span>
+        </v-card-text>
+      </div>
     </v-card>
 
     <AddEditReport
       v-model="addEdit.dialog"
       :projects="projects"
       :report="addEdit.report"
+      :read-only="readOnly"
+      :user="user"
     ></AddEditReport>
   </div>
 </template>
@@ -74,8 +80,16 @@ export default {
       type: Array,
       default: () => [],
     },
-    limit: {
-      type: [String, Number],
+    recent: {
+      type: Boolean,
+      default: false,
+    },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
+    user: {
+      type: Object,
       default: null,
     },
   },
@@ -86,8 +100,8 @@ export default {
   },
   computed: {
     filteredReports() {
-      if (this.limit) {
-        return this.reports.slice(0, +this.limit)
+      if (this.recent) {
+        return this.reports.slice(0, 5)
       }
       return this.reports
     },

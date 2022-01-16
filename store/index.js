@@ -13,4 +13,10 @@ export const getters = {
   //   if (!state.user) return ''
   //   return state.user.firstname + ' ' + state.user.lastname
   // },
+  isAdmin: (state) => {
+    return state.user.role === 'ADMIN'
+  },
+  isManager: (state) => {
+    return state.user.role === 'MANAGER'
+  },
 }

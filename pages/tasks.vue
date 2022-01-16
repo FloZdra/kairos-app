@@ -1,5 +1,6 @@
 <template>
-  <v-container>
+  <v-container fluid>
+    <PageTitle>Tasks</PageTitle>
     <v-row>
       <v-col>
         <ListTasks :projects="projects" :tasks="tasks"></ListTasks>

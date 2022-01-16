@@ -1,14 +1,15 @@
 <template>
-  <v-container>
+  <v-container fluid>
+    <PageTitle hide-back-button>Home</PageTitle>
     <v-row>
       <v-col>
-        <ListTasks :projects="projects" :tasks="tasks" limit="5"></ListTasks>
+        <ListTasks :projects="projects" :tasks="tasks" recent></ListTasks>
       </v-col>
       <v-col>
-        <ListProjects :projects="projects" limit="5"></ListProjects>
+        <ListProjects :projects="projects" recent></ListProjects>
       </v-col>
       <v-col>
-        <ListReports :projects="projects" :reports="reports" limit="5"></ListReports>
+        <ListReports :projects="projects" :reports="reports" recent></ListReports>
       </v-col>
     </v-row>
   </v-container>

@@ -1,17 +1,11 @@
 <template>
   <div>
-    <v-card>
-      <div class="d-flex align-end pa-3">
-        <!--        <v-img-->
-        <!--          class="mr-2 align-self-center"-->
-        <!--          src="/kairos-logo-clock.svg"-->
-        <!--          height="24"-->
-        <!--          max-width="24"-->
-        <!--        />-->
-        <span class="text-h6 font-weight-bold">Recent tasks</span>
+    <v-card class="overflow-hidden">
+      <div class="d-flex align-center pa-3">
+        <span class="text-h6 font-weight-bold text-no-wrap">{{ recent ? 'Recent tasks' : 'Tasks' }}</span>
         <v-spacer></v-spacer>
 
-        <v-btn v-if="tasks.length > 0 && limit" text class="primary--text text-body-2" to="/tasks">
+        <v-btn v-if="tasks.length > 0 && recent" text class="primary--text text-caption" small to="/tasks">
           {{ `See all (${tasks.length})` }}
         </v-btn>
       </div>
@@ -31,7 +25,7 @@
           >
             {{ task.frozen_month_id ? 'mdi-check-circle-outline' : 'mdi-record-circle-outline' }}
           </v-icon>
-          <div class="text-truncate">
+          <div class="text-no-wrap">
             <span>{{ task.name }}</span>
             <!--            <v-icon small>mdi-circle-medium</v-icon>-->
             <v-chip small label class="ml-2 px-2 primary--text" color="#e6f3fe">
@@ -49,19 +43,26 @@
         <div class="d-flex align-center pa-3 text-body-2">No tasks</div>
       </div>
 
-      <v-divider></v-divider>
-      <v-card-text
-        v-ripple
-        class="pa-3 text-body-2"
-        style="user-select: none; cursor: pointer"
-        @click="addTask"
-      >
-        <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
-        <span>Add a task</span>
-      </v-card-text>
+      <div v-if="!readOnly">
+        <v-divider></v-divider>
+        <v-card-text
+          v-ripple
+          class="pa-3 text-body-2"
+          style="user-select: none; cursor: pointer"
+          @click="addTask"
+        >
+          <v-icon size="18" class="mt-n1" left>mdi-plus</v-icon>
+          <span>Add a task</span>
+        </v-card-text>
+      </div>
     </v-card>
 
-    <AddEditTask v-model="addEdit.dialog" :projects="projects" :task="addEdit.task"></AddEditTask>
+    <AddEditTask
+      v-model="addEdit.dialog"
+      :projects="projects"
+      :task="addEdit.task"
+      :read-only="readOnly"
+    ></AddEditTask>
   </div>
 </template>
 
@@ -80,9 +81,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    limit: {
-      type: [String, Number],
-      default: null,
+    recent: {
+      type: Boolean,
+      default: false,
+    },
+    readOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -92,8 +97,8 @@ export default {
   },
   computed: {
     filteredTasks() {
-      if (this.limit) {
-        return this.tasks.slice(0, +this.limit)
+      if (this.recent) {
+        return this.tasks.slice(0, 5)
       }
       return this.tasks
     },
