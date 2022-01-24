@@ -75,6 +75,30 @@ export default {
     display: 'swap',
   },
 
+  pwa: {
+    icon: {
+      source: './static/pwa-icon.png',
+      filename: 'pwa-icon.png',
+    },
+    manifest: {
+      name: 'Kairos',
+      lang: 'fr',
+      theme_color: '#f3f3f3',
+      background_color: '#f3f3f3',
+      short_name: 'Kairos',
+      crossorigin: 'use-credentials',
+    },
+    meta: {
+      name: 'Kairos',
+      og: {
+        title: 'Kairos',
+      },
+      theme_color: '#f3f3f3',
+      background_color: '#f3f3f3',
+      appleStatusBarStyle: 'white',
+    },
+  },
+
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     treeShake: true,
