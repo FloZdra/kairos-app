@@ -40,7 +40,7 @@
         <div class="d-flex align-center pa-3 text-body-2">No projects</div>
       </div>
 
-      <div v-if="!readOnly">
+      <div v-if="!$store.getters.isUser">
         <v-divider></v-divider>
         <v-card-text
           v-ripple
@@ -57,7 +57,7 @@
     <AddEditProject
       v-model="addEdit.dialog"
       :project="addEdit.project"
-      :read-only="readOnly"
+      :read-only="readOnly || $store.getters.isUser"
     ></AddEditProject>
   </div>
 </template>

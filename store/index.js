@@ -13,10 +13,13 @@ export const getters = {
   //   if (!state.user) return ''
   //   return state.user.firstname + ' ' + state.user.lastname
   // },
-  isAdmin: (state) => {
-    return state.user.role === 'ADMIN'
+  isUser: (state) => {
+    return state?.user?.role === 'USER'
   },
   isManager: (state) => {
-    return state.user.role === 'MANAGER'
+    return state?.user?.role === 'MANAGER'
+  },
+  isAdmin: (state) => {
+    return state?.user?.role === 'ADMIN'
   },
 }

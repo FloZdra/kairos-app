@@ -13,7 +13,12 @@
         {{ (project ? 'Edit' : 'Create') + ' a project' }}
       </v-card-title>
 
-      <v-form ref="form" v-model="formValid" lazy-validation :disabled="loading || done || readOnly">
+      <v-form
+        ref="form"
+        v-model="formValid"
+        lazy-validation
+        :disabled="loading || done || readOnly"
+      >
         <v-card-text>
           <v-text-field
             v-model="projectData.name"
@@ -102,7 +107,7 @@ export default {
     readOnly: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {

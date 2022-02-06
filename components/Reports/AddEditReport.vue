@@ -52,7 +52,7 @@
         </v-card-text>
         <v-card-actions class="px-4 pb-8">
           <v-btn
-            v-if="report"
+            v-if="report && !$store.getters.isUser"
             text
             color="error"
             class="px-3"

@@ -69,10 +69,9 @@
       </v-container>
     </v-main>
 
-    <v-bottom-navigation color="primary" background-color="shade" fixed>
-      <v-btn value="home" to="/home">
+    <v-bottom-navigation color="primary" background-color="shade" fixed height="85">
+      <v-btn value="home" to="/home" class="pb-6 pb-sm-0">
         <span>Home</span>
-
         <v-icon>mdi-home</v-icon>
       </v-btn>
 
@@ -87,21 +86,15 @@
       </v-btn>
 
       <v-btn v-if="$store.getters.isAdmin" value="managers" :to="`/managers`">
-        <span>Managers</span>
+        <span>All teams</span>
 
         <v-icon>mdi-account-multiple</v-icon>
       </v-btn>
       <v-btn v-if="$store.getters.isAdmin" value="admin" :to="`/admin`">
-        <span>Admin panel</span>
+        <span>Admin</span>
 
         <v-icon>mdi-table-cog</v-icon>
       </v-btn>
-
-      <!--      <v-btn value="timeline" to="/timeline">-->
-      <!--        <span>Timeline</span>-->
-
-      <!--        <v-icon>mdi-calendar-text</v-icon>-->
-      <!--      </v-btn>-->
     </v-bottom-navigation>
   </v-app>
 </template>

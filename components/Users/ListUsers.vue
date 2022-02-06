@@ -41,11 +41,11 @@
               <div v-else class="text--secondary text-caption d-flex align-center">
                 <v-icon small color="success">mdi-record-circle-outline</v-icon>
                 <span class="ml-1">
-                  {{ user.tasks.filter((t) => !t.frozen_month).length }}
+                  {{ user.tasks.filter((t) => t.frozen_month_id === null).length }}
                 </span>
                 <v-icon small color="secondary" class="ml-2">mdi-check-circle-outline</v-icon>
                 <span class="ml-1">
-                  {{ user.tasks.filter((t) => t.frozen_month).length }}
+                  {{ user.tasks.filter((t) => t.frozen_month_id !== null).length }}
                 </span>
               </div>
             </div>
@@ -57,7 +57,7 @@
         <div class="d-flex align-center pa-3 text-body-2">There are no users</div>
       </div>
 
-      <div>
+      <div v-if="!managers">
         <v-divider></v-divider>
         <v-card-text
           v-ripple
