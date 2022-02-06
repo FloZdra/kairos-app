@@ -79,18 +79,19 @@
         v-if="$store.getters.isManager"
         value="manager"
         :to="`/managers/${$store.state.user.id}`"
+        class="pb-6 pb-sm-0"
       >
         <span>My team</span>
 
         <v-icon>mdi-account-multiple</v-icon>
       </v-btn>
 
-      <v-btn v-if="$store.getters.isAdmin" value="managers" :to="`/managers`">
+      <v-btn v-if="$store.getters.isAdmin" value="managers" :to="`/managers`" class="pb-6 pb-sm-0">
         <span>All teams</span>
 
         <v-icon>mdi-account-multiple</v-icon>
       </v-btn>
-      <v-btn v-if="$store.getters.isAdmin" value="admin" :to="`/admin`">
+      <v-btn v-if="$store.getters.isAdmin" value="admin" :to="`/admin`" class="pb-6 pb-sm-0">
         <span>Admin</span>
 
         <v-icon>mdi-table-cog</v-icon>
