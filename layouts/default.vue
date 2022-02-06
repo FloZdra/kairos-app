@@ -59,7 +59,7 @@
       </v-menu>
     </v-app-bar>
 
-    <v-main class="shade pb-14">
+    <v-main class="shade pb-16 mb-12">
       <v-container fluid>
         <v-row justify="center">
           <v-col cols="12" sm="11" lg="10">
