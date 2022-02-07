@@ -121,6 +121,17 @@ alter table task
 
 ## Screenshots & Videos
 
+
+
+
+https://user-images.githubusercontent.com/36273997/152800777-0ec51cda-e29e-475e-b6e0-f4741c5d339c.mp4
+
+
+
+https://user-images.githubusercontent.com/36273997/152800838-8cd72619-108f-4f3d-951c-19ce94963e35.mp4
+
+
+
 ### User
 
 ![](github/app/user/kairos.png)
