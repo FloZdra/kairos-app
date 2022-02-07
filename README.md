@@ -168,6 +168,14 @@ $ npm run generate
 
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
+You also need to configure your .env :
+```
+BACKEND_HOST=<enter_adonis_server_endpoint>
+BACKEND_PORT=<enter_adonis_server_port>
+SPRINGBOOT_HOST=<enter_adonis_server_port>
+SPRINGBOOT_PORT=<enter_spring_server_port>
+```
+
 ## Special Directories
 
 You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can
